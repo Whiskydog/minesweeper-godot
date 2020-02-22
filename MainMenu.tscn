@@ -1,0 +1,111 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Fonts/Comfortaa-Regular-64px.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Controls/ExitLabel.gd" type="Script" id=2]
+[ext_resource path="res://Fonts/Comfortaa-Regular-16px.tres" type="DynamicFont" id=3]
+[ext_resource path="res://Fonts/Comfortaa-Regular-32px.tres" type="DynamicFont" id=4]
+[ext_resource path="res://Controls/ClickableLabel.gd" type="Script" id=6]
+
+[node name="MainMenu" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 120
+custom_constants/margin_top = 80
+custom_constants/margin_left = 120
+custom_constants/margin_bottom = 80
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MainContainer" type="VBoxContainer" parent="."]
+margin_left = 120.0
+margin_top = 80.0
+margin_right = 904.0
+margin_bottom = 520.0
+alignment = 1
+
+[node name="Logo" type="Label" parent="MainContainer"]
+margin_right = 784.0
+margin_bottom = 72.0
+custom_fonts/font = ExtResource( 1 )
+text = "Minesweeper"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="MainContainer"]
+margin_top = 76.0
+margin_right = 784.0
+margin_bottom = 121.0
+custom_constants/margin_top = 45
+
+[node name="MenuOptions" type="VBoxContainer" parent="MainContainer"]
+margin_top = 125.0
+margin_right = 784.0
+margin_bottom = 399.0
+size_flags_vertical = 3
+custom_constants/separation = 30
+alignment = 1
+
+[node name="NewGame" type="Label" parent="MainContainer/MenuOptions"]
+margin_top = 51.0
+margin_right = 784.0
+margin_bottom = 88.0
+mouse_filter = 1
+custom_fonts/font = ExtResource( 4 )
+text = "New Game"
+align = 1
+valign = 1
+script = ExtResource( 6 )
+scene_path = "res://Game.tscn"
+
+[node name="Options" type="Label" parent="MainContainer/MenuOptions"]
+margin_top = 118.0
+margin_right = 784.0
+margin_bottom = 155.0
+mouse_filter = 1
+custom_fonts/font = ExtResource( 4 )
+text = "Options"
+align = 1
+valign = 1
+script = ExtResource( 6 )
+
+[node name="Exit" type="Label" parent="MainContainer/MenuOptions"]
+margin_top = 185.0
+margin_right = 784.0
+margin_bottom = 222.0
+mouse_filter = 1
+custom_fonts/font = ExtResource( 4 )
+text = "Exit"
+align = 1
+valign = 1
+script = ExtResource( 2 )
+
+[node name="VersionCompany" type="HBoxContainer" parent="MainContainer"]
+margin_top = 403.0
+margin_right = 784.0
+margin_bottom = 440.0
+alignment = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/VersionCompany"]
+margin_left = 635.0
+margin_right = 784.0
+margin_bottom = 37.0
+
+[node name="Version" type="Label" parent="MainContainer/VersionCompany/VBoxContainer"]
+margin_right = 149.0
+margin_bottom = 19.0
+custom_fonts/font = ExtResource( 3 )
+text = "Version 0.0.2"
+align = 1
+valign = 1
+
+[node name="Company" type="Label" parent="MainContainer/VersionCompany/VBoxContainer"]
+margin_top = 23.0
+margin_right = 149.0
+margin_bottom = 37.0
+text = "Whiskydog Productions"
+align = 1
+valign = 1
