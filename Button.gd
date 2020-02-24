@@ -1,16 +1,15 @@
 extends Button
 
-enum State { NUMBER, MINE }
+enum State { NUMBER = 1, MINE = 2 }
 
 onready var grid = get_parent()
 
 var grid_pos = { row = 0, column = 0 }
 var mines_adjacent = 0
+var flagged_adjacent = 0
 var unavailable = false setget set_unavailable
 var flagged = false setget flag, is_flagged
-var state
-
-signal mouse_has_entered
+var state: int
 
 
 func _init(size, row, column):
@@ -24,16 +23,8 @@ func _init(size, row, column):
 	align = Button.ALIGN_CENTER
 
 
-func _ready():
-	connect('mouse_entered', self, '_on_mouse_entered')
-
-
 func grid_pos_to_string():
 	return str(grid_pos.row) + ', ' + str(grid_pos.column)
-
-
-func _on_mouse_entered():
-	emit_signal('mouse_has_entered', self)
 
 
 func has_mine_around():
@@ -46,34 +37,42 @@ func has_mine_around():
 func toggle_adjacent():
 	for button in grid.get_adjacent(self):
 		if not button.is_mine() and not button.unavailable:
-			button.unavailable = true
+			button.set_unavailable()
 
 
 func is_mine():
 	return state == State.MINE
 
 
-func set_unavailable(value):
+func set_unavailable(value = true):
 	unavailable = value
 	if unavailable:
+		if flagged:
+			flag(false)
 		if not pressed:
 			pressed = true
 		if mines_adjacent == 0 and not is_mine():
 			toggle_adjacent()
-		elif is_mine() and not Global.game.game_over:
+		elif is_mine():
 			grid.emit_signal('toggled_mine')
 		match state:
 			State.NUMBER: text = str(mines_adjacent)
 			State.MINE: text = '*'
 
 
-
 func flag(value):
+	if flagged == value:
+		return
 	flagged = value
+	var sum = 0
 	if flagged:
 		text = '?'
+		sum += 1
 	else:
 		text = ''
+		sum -= 1
+	for button in grid.get_adjacent(self):
+		button.flagged_adjacent += sum
 
 
 func is_flagged():

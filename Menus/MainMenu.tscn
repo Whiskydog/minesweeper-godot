@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://Fonts/Comfortaa-Regular-64px.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Controls/ClickableLabel.gd" type="Script" id=1]
 [ext_resource path="res://Controls/ExitLabel.gd" type="Script" id=2]
 [ext_resource path="res://Fonts/Comfortaa-Regular-16px.tres" type="DynamicFont" id=3]
-[ext_resource path="res://Fonts/Comfortaa-Regular-32px.tres" type="DynamicFont" id=4]
-[ext_resource path="res://Controls/ClickableLabel.gd" type="Script" id=6]
+[ext_resource path="res://Fonts/Comfortaa-Regular-64px.tres" type="DynamicFont" id=4]
+[ext_resource path="res://Fonts/Comfortaa-Regular-32px.tres" type="DynamicFont" id=5]
 
 [node name="MainMenu" type="MarginContainer"]
 anchor_right = 1.0
@@ -27,7 +27,7 @@ alignment = 1
 [node name="Logo" type="Label" parent="MainContainer"]
 margin_right = 784.0
 margin_bottom = 72.0
-custom_fonts/font = ExtResource( 1 )
+custom_fonts/font = ExtResource( 4 )
 text = "Minesweeper"
 align = 1
 valign = 1
@@ -54,11 +54,11 @@ margin_top = 51.0
 margin_right = 784.0
 margin_bottom = 88.0
 mouse_filter = 1
-custom_fonts/font = ExtResource( 4 )
+custom_fonts/font = ExtResource( 5 )
 text = "New Game"
 align = 1
 valign = 1
-script = ExtResource( 6 )
+script = ExtResource( 1 )
 scene_path = "res://Game.tscn"
 
 [node name="Options" type="Label" parent="MainContainer/MenuOptions"]
@@ -66,18 +66,19 @@ margin_top = 118.0
 margin_right = 784.0
 margin_bottom = 155.0
 mouse_filter = 1
-custom_fonts/font = ExtResource( 4 )
+custom_fonts/font = ExtResource( 5 )
 text = "Options"
 align = 1
 valign = 1
-script = ExtResource( 6 )
+script = ExtResource( 1 )
+scene_path = "res://Menus/OptionsMenu.tscn"
 
 [node name="Exit" type="Label" parent="MainContainer/MenuOptions"]
 margin_top = 185.0
 margin_right = 784.0
 margin_bottom = 222.0
 mouse_filter = 1
-custom_fonts/font = ExtResource( 4 )
+custom_fonts/font = ExtResource( 5 )
 text = "Exit"
 align = 1
 valign = 1
@@ -98,7 +99,7 @@ margin_bottom = 37.0
 margin_right = 149.0
 margin_bottom = 19.0
 custom_fonts/font = ExtResource( 3 )
-text = "Version 0.0.2"
+text = "Version 0.1.1"
 align = 1
 valign = 1
 

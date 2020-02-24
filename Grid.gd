@@ -8,38 +8,51 @@ var mine_count = 0
 var input = {
 	'last_but': null,
 	'cur_but': null,
+	'mb_pressed': false,
 	'mb_left': false,
-	'mb_right': false
+	'mb_right': false,
+	'motion': false
 }
 
 signal toggled_mine
+signal first_move_done
 
 
 func _ready():
 	_initialize()
+	connect('toggled_mine', self, '_on_toggled_mine')
+	connect('first_move_done', self, '_on_first_move_done')
 
 
 func _gui_input(event):
 	if event is InputEventMouse:
 		input.last_but = input.cur_but
 		input.cur_but = get_button_at_local_pos(event.position)
-		input.mb_left = event.button_mask == BUTTON_LEFT
-		input.mb_right = event.button_mask == BUTTON_RIGHT
+		if event is InputEventMouseMotion:
+			input.motion = true
+			input.mb_left = event.button_mask == BUTTON_LEFT
+			input.mb_right = event.button_mask == BUTTON_RIGHT
+		elif event is InputEventMouseButton:
+			input.motion = false
+			input.mb_left = event.button_index == BUTTON_LEFT
+			input.mb_right = event.button_index == BUTTON_RIGHT
+			input.mb_pressed = event.pressed
 		_process_mouse()
 		
 
 func _process_mouse():
 	if input.cur_but != null:
-		if input.cur_but.unavailable:
-			press_adjacent(input.cur_but, input.mb_left)
-		elif input.mb_left and not input.cur_but.pressed and not input.cur_but.is_flagged():
-			input.cur_but.pressed = true
-		elif not input.mb_left and input.cur_but.pressed:
-			if not input.cur_but.unavailable:
-				if not Global.game.first_move_done:
-					_init_board()
-				input.cur_but.unavailable = true
-		elif input.mb_right:
+		if input.mb_left:
+			if input.cur_but.unavailable:
+				press_adjacent(input.cur_but)
+			elif input.mb_pressed and not input.cur_but.pressed and not input.cur_but.is_flagged():
+				input.cur_but.pressed = true
+			elif not input.mb_pressed and input.cur_but.pressed:
+				if not input.cur_but.unavailable:
+					if is_connected('first_move_done', self, '_on_first_move_done'):
+						emit_signal('first_move_done')
+					input.cur_but.set_unavailable()
+		elif not input.motion and input.mb_right and not input.cur_but.unavailable and input.mb_pressed:
 			input.cur_but.flag(not input.cur_but.is_flagged())
 	if input.last_but != null and input.last_but != input.cur_but:
 		press_adjacent(input.last_but, false)
@@ -47,8 +60,16 @@ func _process_mouse():
 			input.last_but.pressed = false
 
 
+func press_adjacent(button, pressed = input.mb_pressed):
+	for adj in get_adjacent(button):
+		if not adj.is_flagged() and button.flagged_adjacent != 0 and button.flagged_adjacent >= button.mines_adjacent and not input.mb_right and input.mb_left and not pressed:
+			adj.set_unavailable()
+		elif not adj.unavailable:
+			if not adj.is_flagged():
+				adj.pressed = pressed
+
+
 func _init_board():
-	Global.game.first_move_done = true
 	_place_mines()
 	_place_numbers()
 
@@ -105,13 +126,17 @@ func get_adjacent(button):
 	return array
 
 
-func press_adjacent(button, pressed):
-	for adj in get_adjacent(button):
-		if not adj.unavailable and not adj.is_flagged():
-			adj.pressed = pressed
-
-
 func reveal_mines():
 	for b in get_children():
-		if b.is_mine() and not b.is_flagged():
-			b.unavailable = true
+		if b.is_mine() and not b.is_flagged() and not b.unavailable:
+			b.set_unavailable()
+
+
+func _on_toggled_mine():
+	mouse_filter = MOUSE_FILTER_IGNORE
+	reveal_mines()
+
+
+func _on_first_move_done():
+	disconnect('first_move_done', self, '_on_first_move_done')
+	_init_board()

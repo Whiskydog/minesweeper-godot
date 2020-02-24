@@ -1,6 +1,5 @@
 extends Node
 
-var game: Node
 
 func _ready():
 	randomize()
