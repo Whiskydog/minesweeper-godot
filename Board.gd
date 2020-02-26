@@ -69,7 +69,7 @@ func _process_mouse():
 
 func press_adjacent(cell, pressed = input.mb_pressed):
 	for adj in get_adjacent(cell):
-		if not adj.is_flagged() and cell.flagged_adjacent != 0 and cell.flagged_adjacent >= cell.mines_adjacent and not input.mb_right and (input.mb_left and not pressed):
+		if not adj.is_flagged() and cell.flagged_adjacent != 0 and cell.flagged_adjacent >= cell.mines_adjacent and not input.mb_right and input.mb_left and not pressed and input.cur_cell == input.last_cell:
 			adj.set_unavailable()
 		elif not adj.unavailable:
 			if not adj.is_flagged():
