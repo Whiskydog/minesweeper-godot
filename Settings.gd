@@ -2,7 +2,7 @@ extends Node
 
 enum { LOAD_SUCCESS, LOAD_ERROR_COULDNT_OPEN }
 
-const SAVE_PATH = 'res://config.cfg'
+const SAVE_PATH = 'user://config.cfg'
 
 var _config_file = ConfigFile.new()
 var _settings = {
