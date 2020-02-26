@@ -16,7 +16,8 @@ var _settings = {
 
 
 func _ready():
-	load_settings()
+	if load_settings() == LOAD_ERROR_COULDNT_OPEN:
+		save_settings()
 	OS.window_fullscreen = get_setting('video', 'fullscreen')
 
 
