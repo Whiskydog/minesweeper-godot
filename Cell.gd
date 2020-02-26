@@ -2,20 +2,20 @@ extends Button
 
 enum State { NUMBER = 1, MINE = 2 }
 
-onready var grid = get_parent()
+onready var board = get_parent()
 
-var grid_pos = { row = 0, column = 0 }
+var board_pos = { row = 0, column = 0 }
 var mines_adjacent = 0
 var flagged_adjacent = 0
 var unavailable = false setget set_unavailable
 var flagged = false setget flag, is_flagged
-var state: int
+var state = 0
 
 
 func _init(size, row, column):
 	._init()
-	grid_pos.row = row
-	grid_pos.column = column
+	board_pos.row = row
+	board_pos.column = column
 	toggle_mode = true
 	rect_min_size = Vector2.ONE * size
 	focus_mode = FOCUS_NONE
@@ -23,21 +23,20 @@ func _init(size, row, column):
 	align = Button.ALIGN_CENTER
 
 
-func grid_pos_to_string():
-	return str(grid_pos.row) + ', ' + str(grid_pos.column)
+func board_pos_to_string():
+	return str(board_pos.row) + ', ' + str(board_pos.column)
 
 
 func has_mine_around():
-	for button in grid.get_adjacent(self):
-		if button.is_mine():
+	for cell in board.get_adjacent(self):
+		if cell.is_mine():
 			return true
 	return false
 
 
 func toggle_adjacent():
-	for button in grid.get_adjacent(self):
-		if not button.is_mine() and not button.unavailable:
-			button.set_unavailable()
+	for cell in board.get_adjacent(self):
+		cell.set_unavailable()
 
 
 func is_mine():
@@ -45,22 +44,30 @@ func is_mine():
 
 
 func set_unavailable(value = true):
+	if unavailable == value:
+		return
 	unavailable = value
 	if unavailable:
 		if flagged:
 			flag(false)
 		if not pressed:
 			pressed = true
-		if mines_adjacent == 0 and not is_mine():
-			toggle_adjacent()
-		elif is_mine():
-			grid.emit_signal('toggled_mine')
+		
+		if is_mine():
+			board.emit_signal('toggled_mine')
+		else:
+			if mines_adjacent == 0:
+				toggle_adjacent()
+			board.safe_left -= 1
+		
 		match state:
 			State.NUMBER: text = str(mines_adjacent)
 			State.MINE: text = '*'
+	if board.safe_left <= 0:
+		board.emit_signal('game_won')
 
 
-func flag(value):
+func flag(value = true):
 	if flagged == value:
 		return
 	flagged = value
@@ -71,9 +78,17 @@ func flag(value):
 	else:
 		text = ''
 		sum -= 1
-	for button in grid.get_adjacent(self):
-		button.flagged_adjacent += sum
+	for cell in board.get_adjacent(self):
+		cell.flagged_adjacent += sum
 
 
 func is_flagged():
 	return flagged
+
+
+func mines_around():
+	var cant = 0
+	for cell in board.get_adjacent(self):
+		if cell.state == State.MINE:
+			cant += 1
+	return cant
