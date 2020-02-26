@@ -9,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource( 1 )
 custom_constants/margin_top = 80
+custom_constants/margin_bottom = 80
 script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -19,7 +20,7 @@ fullscreen_checkbox_path = NodePath("MainContainer/SecondaryContainer/TertiaryCo
 [node name="MainContainer" type="VBoxContainer" parent="."]
 margin_top = 80.0
 margin_right = 1024.0
-margin_bottom = 600.0
+margin_bottom = 520.0
 theme = ExtResource( 1 )
 custom_constants/separation = 20
 
@@ -33,48 +34,50 @@ valign = 1
 [node name="SecondaryContainer" type="HBoxContainer" parent="MainContainer"]
 margin_top = 57.0
 margin_right = 1024.0
-margin_bottom = 165.0
+margin_bottom = 383.0
+size_flags_vertical = 3
 alignment = 1
 
 [node name="TertiaryContainer" type="VBoxContainer" parent="MainContainer/SecondaryContainer"]
 margin_left = 174.0
 margin_right = 347.0
-margin_bottom = 108.0
+margin_bottom = 326.0
 custom_constants/separation = 20
 alignment = 1
 
 [node name="Fullscreen" type="Label" parent="MainContainer/SecondaryContainer/TertiaryContainer"]
-margin_top = 7.0
+margin_top = 116.0
 margin_right = 173.0
-margin_bottom = 44.0
+margin_bottom = 153.0
 text = "Fullscreen"
 align = 1
 valign = 1
 
 [node name="Difficulty" type="Label" parent="MainContainer/SecondaryContainer/TertiaryContainer"]
-margin_top = 64.0
+margin_top = 173.0
 margin_right = 173.0
-margin_bottom = 101.0
+margin_bottom = 210.0
 text = "Difficulty"
 align = 1
 
 [node name="SeparatorContainer" type="MarginContainer" parent="MainContainer/SecondaryContainer"]
 margin_left = 351.0
 margin_right = 601.0
-margin_bottom = 108.0
+margin_bottom = 326.0
 custom_constants/margin_left = 250
 
 [node name="TertiaryContainer2" type="VBoxContainer" parent="MainContainer/SecondaryContainer"]
 margin_left = 605.0
 margin_right = 850.0
-margin_bottom = 108.0
+margin_bottom = 326.0
 custom_constants/separation = 20
 alignment = 1
 
 [node name="FullscreenCheckbox" type="CheckBox" parent="MainContainer/SecondaryContainer/TertiaryContainer2"]
 margin_left = 82.0
+margin_top = 109.0
 margin_right = 163.0
-margin_bottom = 45.0
+margin_bottom = 154.0
 rect_min_size = Vector2( 81, 0 )
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -83,18 +86,18 @@ flat = true
 align = 1
 
 [node name="DifficultySelector" type="OptionButton" parent="MainContainer/SecondaryContainer/TertiaryContainer2"]
-margin_top = 65.0
+margin_top = 174.0
 margin_right = 245.0
-margin_bottom = 108.0
+margin_bottom = 217.0
 rect_min_size = Vector2( 245, 0 )
 text = "Beginner"
 flat = true
 align = 1
 
 [node name="Back" type="Label" parent="MainContainer"]
-margin_top = 185.0
+margin_top = 403.0
 margin_right = 1024.0
-margin_bottom = 222.0
+margin_bottom = 440.0
 mouse_filter = 1
 text = "Back"
 align = 1
