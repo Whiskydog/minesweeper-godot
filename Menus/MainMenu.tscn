@@ -97,7 +97,7 @@ margin_bottom = 42.0
 [node name="Version" type="Label" parent="MainContainer/VersionCompany/VBoxContainer"]
 margin_right = 198.0
 margin_bottom = 19.0
-text = "Version 0.2.3"
+text = "Version 0.2.4"
 align = 1
 valign = 1
 
