@@ -14,11 +14,12 @@ var input = {
 	'motion': false
 }
 
-onready var safe_left = rows * columns - mine_count
+var safe_left: int
 
 signal game_won
 signal toggled_mine
 signal first_move_done
+signal cell_flagged
 
 
 func _ready():
@@ -26,6 +27,7 @@ func _ready():
 	connect('game_won', self, '_on_game_won')
 	connect('toggled_mine', self, '_on_toggled_mine')
 	connect('first_move_done', self, '_on_first_move_done')
+
 
 
 func _gui_input(event):
@@ -109,6 +111,12 @@ func _place_mines():
 
 
 func _initialize():
+	var difficulty = Settings.get_setting('game', 'difficulty')
+	rows = difficulty.rows
+	columns = difficulty.columns
+	mine_count = difficulty.mine_count
+	safe_left = rows * columns - mine_count
+
 	for i in range(columns * rows):
 		var row = i / columns
 		var column = posmod(i, columns)

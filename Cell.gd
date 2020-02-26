@@ -80,6 +80,7 @@ func flag(value = true):
 		sum -= 1
 	for cell in board.get_adjacent(self):
 		cell.flagged_adjacent += sum
+	board.emit_signal('cell_flagged', flagged)
 
 
 func is_flagged():

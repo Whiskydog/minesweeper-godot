@@ -31,12 +31,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Grid" parent="CenterContainer" instance=ExtResource( 4 )]
+[node name="Board" parent="CenterContainer" instance=ExtResource( 4 )]
 margin_right = 0.0
 margin_bottom = 0.0
-columns = 30
-rows = 16
-mine_count = 99
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 anchor_left = 0.5
@@ -54,14 +51,14 @@ __meta__ = {
 }
 
 [node name="MineCounter" type="VBoxContainer" parent="HBoxContainer"]
-margin_left = 135.0
+margin_left = 123.0
 margin_right = 195.0
 margin_bottom = 50.0
 rect_min_size = Vector2( 60, 0 )
 alignment = 1
 
 [node name="Label" type="Label" parent="HBoxContainer/MineCounter"]
-margin_right = 60.0
+margin_right = 72.0
 margin_bottom = 19.0
 theme = ExtResource( 8 )
 text = "MINES"
@@ -73,8 +70,9 @@ __meta__ = {
 
 [node name="Counter" type="Label" parent="HBoxContainer/MineCounter"]
 margin_top = 23.0
-margin_right = 60.0
+margin_right = 72.0
 margin_bottom = 50.0
+rect_min_size = Vector2( 72, 0 )
 custom_fonts/font = ExtResource( 7 )
 text = "000"
 align = 1
@@ -109,13 +107,13 @@ margin_bottom = 50.0
 
 [node name="TimeCounter" type="VBoxContainer" parent="HBoxContainer"]
 margin_left = 325.0
-margin_right = 385.0
+margin_right = 397.0
 margin_bottom = 50.0
 rect_min_size = Vector2( 60, 0 )
 alignment = 1
 
 [node name="Label" type="Label" parent="HBoxContainer/TimeCounter"]
-margin_right = 60.0
+margin_right = 72.0
 margin_bottom = 19.0
 theme = ExtResource( 8 )
 text = "TIME"
@@ -124,8 +122,9 @@ valign = 1
 
 [node name="Timer" type="Label" parent="HBoxContainer/TimeCounter"]
 margin_top = 23.0
-margin_right = 60.0
+margin_right = 72.0
 margin_bottom = 50.0
+rect_min_size = Vector2( 72, 0 )
 custom_fonts/font = ExtResource( 7 )
 text = "000"
 align = 1
