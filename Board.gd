@@ -4,16 +4,16 @@ export(float, 20.0, 999.0) var cell_size = 20.0
 export(int) var rows = 1
 export(int) var mine_count = 10
 
-var Cell = preload('res://Cell.gd')
-var input = {
-	'last_cell': null,
-	'cur_cell': null,
-	'mb_pressed': false,
-	'mb_left': false,
-	'mb_right': false,
-	'motion': false
-}
+#var input = {
+#	'last_cell': null,
+#	'cur_cell': null,
+#	'mb_pressed': false,
+#	'mb_left': false,
+#	'mb_right': false,
+#	'motion': false
+#}
 
+var last_cell_on_mouse: Cell
 var safe_left: int
 
 signal game_won
@@ -32,52 +32,60 @@ func _ready():
 
 func _gui_input(event):
 	if event is InputEventMouse:
-		input.last_cell = input.cur_cell
-		input.cur_cell = get_cell_at_local_pos(event.position)
-		if event is InputEventMouseMotion:
-			input.motion = true
-			input.mb_left = event.button_mask == BUTTON_LEFT
-			input.mb_right = event.button_mask == BUTTON_RIGHT
-		elif event is InputEventMouseButton:
-			input.motion = false
-			input.mb_left = event.button_index == BUTTON_LEFT
-			input.mb_right = event.button_index == BUTTON_RIGHT
-			input.mb_pressed = event.pressed
-		_process_mouse()
-		
-
-func _process_mouse():
-	if input.cur_cell != null:
-		if input.mb_left:
-			if input.cur_cell.unavailable:
-				press_adjacent(input.cur_cell)
-			elif input.mb_pressed and not input.cur_cell.pressed and not input.cur_cell.is_flagged():
-				input.cur_cell.pressed = true
-			elif not input.mb_pressed and input.cur_cell.pressed:
-				if is_connected('first_move_done', self, '_on_first_move_done'):
-					emit_signal('first_move_done')
-				input.cur_cell.set_unavailable()
-		elif not input.motion and input.mb_right and not input.cur_cell.unavailable and input.mb_pressed:
-			if is_connected('first_move_done', self, '_on_first_move_done'):
-				emit_signal('first_move_done')
-			input.cur_cell.flag(not input.cur_cell.is_flagged())
-	if input.last_cell != null and input.last_cell != input.cur_cell:
-		press_adjacent(input.last_cell, false)
-		if not input.last_cell.unavailable:
-			input.last_cell.pressed = false
+		var cell = get_cell_at_local_pos(event.position)
+		if event is InputEventMouseButton:
+			_process_mouse_button(event as InputEventMouseButton, cell)
+		else:
+			_process_mouse_motion(event as InputEventMouseMotion, cell)
+		last_cell_on_mouse = cell
 
 
-func press_adjacent(cell, pressed = input.mb_pressed):
+func _process_mouse_button(event: InputEventMouseButton, cell: Cell):
+	if event.button_index == BUTTON_LEFT or event.button_index == BUTTON_RIGHT:
+		if is_connected('first_move_done', self, '_on_first_move_done'):
+			emit_signal('first_move_done', cell)
+		if event.button_index == BUTTON_LEFT:
+			if not cell.flagged:
+				if event.pressed:
+					cell.pressed = true
+				else:
+					cell.set_unavailable()
+			if cell.unavailable:
+				press_adjacent(cell, event.pressed)
+		elif event.button_index == BUTTON_RIGHT:
+			if event.pressed:
+				if not cell.unavailable:
+					cell.flag(not cell.flagged)
+
+
+func _process_mouse_motion(event: InputEventMouseMotion, cell: Cell):
+	if event.button_mask == BUTTON_LEFT:
+		if last_cell_on_mouse != null:
+			if last_cell_on_mouse != cell:
+					if not last_cell_on_mouse.unavailable:
+						last_cell_on_mouse.pressed = false
+					else:
+						press_adjacent(last_cell_on_mouse, false)
+		if cell.unavailable:
+			press_adjacent(cell, true)
+		else:
+			if not cell.flagged:
+				cell.pressed = true
+
+
+func press_adjacent(cell, pressed):
 	for adj in get_adjacent(cell):
-		if not adj.is_flagged() and cell.flagged_adjacent != 0 and cell.flagged_adjacent >= cell.mines_adjacent and not input.mb_right and input.mb_left and not pressed and input.cur_cell == input.last_cell:
-			adj.set_unavailable()
-		elif not adj.unavailable:
-			if not adj.is_flagged():
+		if not adj.unavailable:
+			if not adj.flagged:
 				adj.pressed = pressed
+				if not pressed:
+					if cell.flagged_adjacent != 0:
+						if cell.flagged_adjacent >= cell.mines_adjacent:
+							adj.unavailable = true
 
 
-func _init_board():
-	_place_mines()
+func _init_board(initial_cell):
+	_place_mines(initial_cell)
 	_place_numbers()
 
 
@@ -92,7 +100,7 @@ func _place_numbers():
 			cell.state = Cell.State.NUMBER
 
 
-func _place_mines():
+func _place_mines(initial_cell):
 	while mine_count > 0:
 		var row = randi() % rows
 		var col = randi() % columns
@@ -100,14 +108,14 @@ func _place_mines():
 		if cell.state != Cell.State.MINE:
 			cell.state = Cell.State.MINE
 			mine_count -= 1
-	
-	if not input.mb_right and input.cur_cell.state == Cell.State.MINE:
-		input.cur_cell.state = 0
-		var i = 0
-		while get_child(i).state == Cell.State.MINE:
-			i += 1
-		get_child(i).state = Cell.State.MINE
 
+	if not initial_cell.flagged:
+		if initial_cell.state == Cell.State.MINE:
+			initial_cell.state = 0
+			var i = 0
+			while get_child(i).state == Cell.State.MINE:
+				i += 1
+			get_child(i).state = Cell.State.MINE
 
 
 func _initialize():
@@ -159,9 +167,9 @@ func _on_toggled_mine():
 	reveal_mines()
 
 
-func _on_first_move_done():
+func _on_first_move_done(initial_cell):
 	disconnect('first_move_done', self, '_on_first_move_done')
-	_init_board()
+	_init_board(initial_cell)
 
 
 func _on_game_won():
@@ -171,3 +179,8 @@ func _on_game_won():
 		else:
 			cell.flag()
 	mouse_filter = MOUSE_FILTER_IGNORE
+
+
+func toggle_adjacent(cell):
+	for adj in get_adjacent(cell):
+		adj.set_unavailable()

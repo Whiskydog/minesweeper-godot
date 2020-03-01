@@ -1,4 +1,5 @@
 extends Button
+class_name Cell
 
 enum State { NUMBER = 1, MINE = 2 }
 
@@ -34,11 +35,6 @@ func has_mine_around():
 	return false
 
 
-func toggle_adjacent():
-	for cell in board.get_adjacent(self):
-		cell.set_unavailable()
-
-
 func is_mine():
 	return state == State.MINE
 
@@ -57,7 +53,7 @@ func set_unavailable(value = true):
 			board.emit_signal('toggled_mine')
 		else:
 			if mines_adjacent == 0:
-				toggle_adjacent()
+				board.toggle_adjacent(self)
 			board.safe_left -= 1
 		
 		match state:
